@@ -106,24 +106,24 @@ function uid(){return Math.random().toString(36).slice(2,9);}
 
 function seed(){
   const c=(code,title,cr,cats)=>({id:uid(),code,title,cr,letter:"",cats});
-  const cat=(name,weight,scores)=>({id:uid(),name,weight,items:scores.map(s=>({id:uid(),label:s[0],got:s[1],max:s[2]}))});
+  const cat=(name,weight,labels)=>({id:uid(),name,weight,items:labels.map(l=>({id:uid(),label:l,got:"",max:100}))});
   return {activeTerm:0, terms:[
     {id:uid(),name:"Y2 Fall",courses:[
-      c("ES201","Conservation & Accounting",4,[cat("Exam 1",0.15,[["E1",76.96,100]]),cat("Exam 2",0.15,[["E2",76.5,100]]),cat("Exam 3",0.15,[["E3",58.25,100]]),cat("Exam 4",0.15,[["E4",86,100]]),cat("Learning Checks",0.01,[["LC",85.42,100]]),cat("Homework",0.09,[["HW",79.75,100]]),cat("Final",0.30,[["Final",80,100]])]),
-      c("ES213","Electrical Systems",4,[cat("Comp 1",0.40,[["C1",96,100]]),cat("Comp 2",0.30,[["C2",87,100]]),cat("Comp 3",0.20,[["C3",81.5,100]]),cat("Comp 4",0.10,[["C4",45,100]])]),
-      c("MA223","Engineering Statistics I",4,[cat("Exam 1",0.15,[["E1",88,100]]),cat("Exam 2",0.15,[["E2",73,100]]),cat("Exam 3",0.15,[["E3",74,100]]),cat("Exam 4",0.15,[["E4",95,100]]),cat("Lab",0.30,[["Lab",85.33,100]]),cat("Attendance",0.10,[["Att",80,100]])]),
-      c("EM104","Graphical Communications",2,[cat("Work Packets",0.20,[["WP",95.37,100]]),cat("Midterm",0.20,[["M",97,100]]),cat("Project",0.20,[["P",100,100]]),cat("Final",0.40,[["F",77,100]])]),
+      c("ES201","Conservation & Accounting",4,[cat("Exam 1",0.15,["E1"]),cat("Exam 2",0.15,["E2"]),cat("Exam 3",0.15,["E3"]),cat("Exam 4",0.15,["E4"]),cat("Learning Checks",0.01,["LC"]),cat("Homework",0.09,["HW"]),cat("Final",0.30,["Final"])]),
+      c("ES213","Electrical Systems",4,[cat("Comp 1",0.40,["C1"]),cat("Comp 2",0.30,["C2"]),cat("Comp 3",0.20,["C3"]),cat("Comp 4",0.10,["C4"])]),
+      c("MA223","Engineering Statistics I",4,[cat("Exam 1",0.15,["E1"]),cat("Exam 2",0.15,["E2"]),cat("Exam 3",0.15,["E3"]),cat("Exam 4",0.15,["E4"]),cat("Lab",0.30,["Lab"]),cat("Attendance",0.10,["Att"])]),
+      c("EM104","Graphical Communications",2,[cat("Work Packets",0.20,["WP"]),cat("Midterm",0.20,["M"]),cat("Project",0.20,["P"]),cat("Final",0.40,["F"])]),
     ]},
     {id:uid(),name:"Y2 Winter",courses:[
-      c("MA222","Matrix Algebra & DiffEq II",4,[cat("WebWork",0.08,[["WW",98.78,100]]),cat("Written HW",0.10,[["WHW",88.32,100]]),cat("Exam 1",0.20,[["E1",54,100]]),cat("Exam 2",0.20,[["E2",69,100]]),cat("Exam 3",0.20,[["E3",55,100]]),cat("Final",0.22,[["F",61.58,100]])]),
-      c("EM304","Adv CAD: Prof Certif",4,[cat("CSWA",0.10,[["A",100,100]]),cat("CSWP",0.30,[["P",100,100]]),cat("Project",0.30,[["Proj",100,100]]),cat("Work Packets",0.20,[["WP",96.88,100]]),cat("Final",0.10,[["F","",100]])]),
-      c("ES214","Mechanical Systems",4,[cat("Exam 1",0.22,[["E1",62.12,100]]),cat("Exam 2 Analytical",0.22,[["E2a",72.94,100]]),cat("Exam 2 Programming",0.10,[["E2p",80,100]]),cat("Final",0.36,[["F",60,100]]),cat("Homework",0.10,[["HW",95.33,100]])]),
-      c("ME201","Applications of Thermo",4,[cat("Homework",0.10,[["HW",95.57,100]]),cat("Exam 1",0.20,[["E1",80.95,100]]),cat("Exam 2",0.20,[["E2",51,100]]),cat("Quiz 1",0.03,[["Q1",98.3,100]]),cat("Quiz 2",0.07,[["Q2",72.5,100]]),cat("Project",0.05,[["P",100,100]]),cat("Final",0.35,[["F",70,100]])]),
+      c("MA222","Matrix Algebra & DiffEq II",4,[cat("WebWork",0.08,["WW"]),cat("Written HW",0.10,["WHW"]),cat("Exam 1",0.20,["E1"]),cat("Exam 2",0.20,["E2"]),cat("Exam 3",0.20,["E3"]),cat("Final",0.22,["F"])]),
+      c("EM304","Adv CAD: Prof Certif",4,[cat("CSWA",0.10,["A"]),cat("CSWP",0.30,["P"]),cat("Project",0.30,["Proj"]),cat("Work Packets",0.20,["WP"]),cat("Final",0.10,["F"])]),
+      c("ES214","Mechanical Systems",4,[cat("Exam 1",0.22,["E1"]),cat("Exam 2 Analytical",0.22,["E2a"]),cat("Exam 2 Programming",0.10,["E2p"]),cat("Final",0.36,["F"]),cat("Homework",0.10,["HW"])]),
+      c("ME201","Applications of Thermo",4,[cat("Homework",0.10,["HW"]),cat("Exam 1",0.20,["E1"]),cat("Exam 2",0.20,["E2"]),cat("Quiz 1",0.03,["Q1"]),cat("Quiz 2",0.07,["Q2"]),cat("Project",0.05,["P"]),cat("Final",0.35,["F"])]),
     ]},
     {id:uid(),name:"Y2 Spring",courses:[
-      c("EM204","Statics & Mech II",4,[cat("Quiz",0.02,[["Q",72.9,100]]),cat("Homework",0.08,[["HW",96.79,100]]),cat("Projects",0.06,[["P",95,100]]),cat("Midterm",0.54,[["M",85.33,100]]),cat("Final",0.30,[["F",72.5,100]])]),
-      c("ME328","Material Engineering",4,[cat("Quiz",0.025,[["Q",80,100]]),cat("Mini Lab",0.025,[["ML",96,100]]),cat("Homework",0.10,[["HW",92.53,100]]),cat("Lab/Projects",0.15,[["LP",89,100]]),cat("Midterm",0.40,[["M",77.33,100]]),cat("Final",0.30,[["F",60,100]])]),
-      c("EM230","Mechatronic Systems",4,[cat("Quiz",0.10,[["Q",82.5,100]]),cat("Lab",0.15,[["L",100,100]]),cat("Projects",0.25,[["P",80,100]]),cat("Midterm",0.30,[["M",83.5,100]]),cat("Final",0.20,[["F",63,100]])]),
+      c("EM204","Statics & Mech II",4,[cat("Quiz",0.02,["Q"]),cat("Homework",0.08,["HW"]),cat("Projects",0.06,["P"]),cat("Midterm",0.54,["M"]),cat("Final",0.30,["F"])]),
+      c("ME328","Material Engineering",4,[cat("Quiz",0.025,["Q"]),cat("Mini Lab",0.025,["ML"]),cat("Homework",0.10,["HW"]),cat("Lab/Projects",0.15,["LP"]),cat("Midterm",0.40,["M"]),cat("Final",0.30,["F"])]),
+      c("EM230","Mechatronic Systems",4,[cat("Quiz",0.10,["Q"]),cat("Lab",0.15,["L"]),cat("Projects",0.25,["P"]),cat("Midterm",0.30,["M"]),cat("Final",0.20,["F"])]),
     ]},
     {id:uid(),name:"Y3 Fall",courses:[c("ME380","Machine Component Design",4,[]),c("ES305","System Dynamics",4,[]),c("ES312","Fluid Systems",4,[]),c("ENGL H334","Narratives of Travel",4,[])]},
     {id:uid(),name:"Y3 Winter",courses:[c("ME317","Design for Manufacturing",4,[]),c("ME321","Measurement Systems",4,[]),c("ME306","Control Systems",4,[]),c("HSSA","HSSA Elective",4,[]),c("ME227","Numerical Methods",4,[])]},
@@ -270,7 +270,7 @@ function handleAct(d){
 }
 
 document.getElementById("addCourseBtn").onclick=()=>{curTerm().courses.push({id:uid(),code:"新课程",title:"",cr:4,letter:"",cats:[]}); render(); save();};
-document.getElementById("resetBtn").onclick=()=>{if(confirm("重置为预填 Year 2 数据？你加的内容会丢失。")){state=seed(); openCourses={}; render(); save();}};
+document.getElementById("resetBtn").onclick=()=>{if(confirm("重置为空白课表？你填的成绩会全部清空。")){state=seed(); openCourses={}; render(); save();}};
 document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
