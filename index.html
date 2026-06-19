@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="GPA">
+<meta name="theme-color" content="#1F3864">
+<title>成绩 &amp; GPA 追踪</title>
+<style>
+:root{
+  --navy:#1F3864; --blue:#2E5496; --steel:#4472C4; --green:#548235;
+  --gold:#BF8F00; --goldl:#FFF2CC; --red:#C00000; --grey:#808080;
+  --bg:#F4F6FA; --card:#FFFFFF; --line:#E2E6EE; --line2:#CBD2E0;
+  --text:#1A1A1A; --text2:#5A6172; --text3:#9098A8; --info:#185FA5;
+  --radm:8px; --radl:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#15171C; --card:#1E2128; --line:#2C313B; --line2:#3A4150;
+    --text:#E8EAED; --text2:#A0A6B2; --text3:#6B7280; --goldl:#3A3418; }
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--text); font-size:15px; line-height:1.5;}
+.wrap{max-width:760px; margin:0 auto; padding:14px 12px 60px;}
+.topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+.title{font-size:20px; font-weight:600; color:var(--text);}
+.subtitle{font-size:12px; color:var(--text2);}
+.cumbox{background:var(--card); border:0.5px solid var(--line); border-radius:var(--radl); padding:8px 16px; text-align:center; min-width:110px;}
+.cumbox .lbl{font-size:11px; color:var(--text2);}
+.cumbox .val{font-size:24px; font-weight:600; color:var(--red);}
+.cumbox .hrs{font-size:10px; color:var(--text3);}
+.tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
+.tab{font-size:12px; padding:6px 9px; border:0.5px solid var(--line2); background:var(--card); color:var(--text);
+  border-radius:var(--radm); cursor:pointer;}
+.tab.active{border:2px solid var(--info); font-weight:600;}
+.sumcards{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+.sumcard{background:var(--card); border:0.5px solid var(--line); border-radius:var(--radm); padding:8px 12px; min-width:84px;}
+.sumcard .lbl{font-size:11px; color:var(--text2);}
+.sumcard .val{font-size:18px; font-weight:600;}
+.course{background:var(--card); border:0.5px solid var(--line); border-radius:var(--radl); padding:11px 12px; margin-bottom:9px;}
+.crow{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.cat{border:0.5px solid var(--line); border-radius:var(--radm); padding:8px 9px; margin:6px 0;}
+.cathead{display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:4px;}
+.itemrow{display:flex; gap:6px; align-items:center; margin:4px 0;}
+input,select{font-family:inherit; font-size:13px; height:32px; padding:0 7px; border:0.5px solid var(--line2);
+  border-radius:6px; background:var(--card); color:var(--text); outline:none;}
+input:focus,select:focus{border-color:var(--info); box-shadow:0 0 0 2px rgba(24,95,165,.15);}
+button{font-family:inherit; font-size:13px; height:32px; padding:0 10px; border:0.5px solid var(--line2);
+  background:var(--card); color:var(--text); border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;}
+button:active{transform:scale(.97);}
+.btn-icon{width:32px; padding:0; justify-content:center;}
+.muted{font-size:12px; color:var(--text2);}
+.info{color:var(--info);}
+.warn{color:var(--gold);}
+.bigbtn{width:100%; height:40px; font-size:14px; justify-content:center; margin-top:6px;}
+.footer{margin-top:18px; padding-top:12px; border-top:0.5px solid var(--line); display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+.status{font-size:12px; color:var(--text3); margin-left:auto;}
+.pct{font-size:15px; font-weight:600; min-width:62px; text-align:right;}
+.cr{font-size:12px; color:var(--text2);}
+.help{font-size:12px; color:var(--text2); background:var(--card); border:0.5px solid var(--line);
+  border-radius:var(--radm); padding:8px 10px; margin-bottom:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="title">成绩 &amp; GPA 追踪</div>
+      <div class="subtitle">每条作业逐项记 → 自动 average × weight → GPA</div>
+    </div>
+    <div class="cumbox">
+      <div class="lbl">累计 GPA</div>
+      <div class="val" id="cumGpa">—</div>
+      <div class="hrs" id="cumHrs"></div>
+    </div>
+  </div>
+
+  <div class="help" id="helpBox">
+    💡 每条成绩填「得分 / 满分」，比如 27/30 会自动算 90%。出分后在课程右边选 letter (A/B+/B...)。数据自动存在这台设备的浏览器里。
+    <button onclick="document.getElementById('helpBox').style.display='none'" style="height:24px; padding:0 8px; font-size:11px; margin-left:6px;">知道了</button>
+  </div>
+
+  <div class="tabs" id="termTabs"></div>
+  <div class="sumcards" id="termSummary"></div>
+  <div id="courseList"></div>
+
+  <button class="bigbtn" id="addCourseBtn">+ 添加课程到当前学期</button>
+
+  <div class="footer">
+    <button id="exportBtn">⬇ 导出备份</button>
+    <button id="importBtn">⬆ 导入备份</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;">
+    <button id="resetBtn">↺ 重置预填</button>
+    <span class="status" id="saveStatus"></span>
+  </div>
+</div>
+
+<script>
+const LETTERS={"A":4.0,"B+":3.5,"B":3.0,"C+":2.5,"C":2.0,"D+":1.5,"D":1.0,"F":0.0,"W":null,"S":null,"I":null};
+const GPA_LETTERS=["A","B+","B","C+","C","D+","D","F"];
+const KEY="rhit_gpa_tracker_v1";
+
+function uid(){return Math.random().toString(36).slice(2,9);}
+
+function seed(){
+  const c=(code,title,cr,cats)=>({id:uid(),code,title,cr,letter:"",cats});
+  const cat=(name,weight,scores)=>({id:uid(),name,weight,items:scores.map(s=>({id:uid(),label:s[0],got:s[1],max:s[2]}))});
+  return {activeTerm:0, terms:[
+    {id:uid(),name:"Y2 Fall",courses:[
+      c("ES201","Conservation & Accounting",4,[cat("Exam 1",0.15,[["E1",76.96,100]]),cat("Exam 2",0.15,[["E2",76.5,100]]),cat("Exam 3",0.15,[["E3",58.25,100]]),cat("Exam 4",0.15,[["E4",86,100]]),cat("Learning Checks",0.01,[["LC",85.42,100]]),cat("Homework",0.09,[["HW",79.75,100]]),cat("Final",0.30,[["Final",80,100]])]),
+      c("ES213","Electrical Systems",4,[cat("Comp 1",0.40,[["C1",96,100]]),cat("Comp 2",0.30,[["C2",87,100]]),cat("Comp 3",0.20,[["C3",81.5,100]]),cat("Comp 4",0.10,[["C4",45,100]])]),
+      c("MA223","Engineering Statistics I",4,[cat("Exam 1",0.15,[["E1",88,100]]),cat("Exam 2",0.15,[["E2",73,100]]),cat("Exam 3",0.15,[["E3",74,100]]),cat("Exam 4",0.15,[["E4",95,100]]),cat("Lab",0.30,[["Lab",85.33,100]]),cat("Attendance",0.10,[["Att",80,100]])]),
+      c("EM104","Graphical Communications",2,[cat("Work Packets",0.20,[["WP",95.37,100]]),cat("Midterm",0.20,[["M",97,100]]),cat("Project",0.20,[["P",100,100]]),cat("Final",0.40,[["F",77,100]])]),
+    ]},
+    {id:uid(),name:"Y2 Winter",courses:[
+      c("MA222","Matrix Algebra & DiffEq II",4,[cat("WebWork",0.08,[["WW",98.78,100]]),cat("Written HW",0.10,[["WHW",88.32,100]]),cat("Exam 1",0.20,[["E1",54,100]]),cat("Exam 2",0.20,[["E2",69,100]]),cat("Exam 3",0.20,[["E3",55,100]]),cat("Final",0.22,[["F",61.58,100]])]),
+      c("EM304","Adv CAD: Prof Certif",4,[cat("CSWA",0.10,[["A",100,100]]),cat("CSWP",0.30,[["P",100,100]]),cat("Project",0.30,[["Proj",100,100]]),cat("Work Packets",0.20,[["WP",96.88,100]]),cat("Final",0.10,[["F","",100]])]),
+      c("ES214","Mechanical Systems",4,[cat("Exam 1",0.22,[["E1",62.12,100]]),cat("Exam 2 Analytical",0.22,[["E2a",72.94,100]]),cat("Exam 2 Programming",0.10,[["E2p",80,100]]),cat("Final",0.36,[["F",60,100]]),cat("Homework",0.10,[["HW",95.33,100]])]),
+      c("ME201","Applications of Thermo",4,[cat("Homework",0.10,[["HW",95.57,100]]),cat("Exam 1",0.20,[["E1",80.95,100]]),cat("Exam 2",0.20,[["E2",51,100]]),cat("Quiz 1",0.03,[["Q1",98.3,100]]),cat("Quiz 2",0.07,[["Q2",72.5,100]]),cat("Project",0.05,[["P",100,100]]),cat("Final",0.35,[["F",70,100]])]),
+    ]},
+    {id:uid(),name:"Y2 Spring",courses:[
+      c("EM204","Statics & Mech II",4,[cat("Quiz",0.02,[["Q",72.9,100]]),cat("Homework",0.08,[["HW",96.79,100]]),cat("Projects",0.06,[["P",95,100]]),cat("Midterm",0.54,[["M",85.33,100]]),cat("Final",0.30,[["F",72.5,100]])]),
+      c("ME328","Material Engineering",4,[cat("Quiz",0.025,[["Q",80,100]]),cat("Mini Lab",0.025,[["ML",96,100]]),cat("Homework",0.10,[["HW",92.53,100]]),cat("Lab/Projects",0.15,[["LP",89,100]]),cat("Midterm",0.40,[["M",77.33,100]]),cat("Final",0.30,[["F",60,100]])]),
+      c("EM230","Mechatronic Systems",4,[cat("Quiz",0.10,[["Q",82.5,100]]),cat("Lab",0.15,[["L",100,100]]),cat("Projects",0.25,[["P",80,100]]),cat("Midterm",0.30,[["M",83.5,100]]),cat("Final",0.20,[["F",63,100]])]),
+    ]},
+    {id:uid(),name:"Y3 Fall",courses:[c("ME380","Machine Component Design",4,[]),c("ES305","System Dynamics",4,[]),c("ES312","Fluid Systems",4,[]),c("ENGL H334","Narratives of Travel",4,[])]},
+    {id:uid(),name:"Y3 Winter",courses:[c("ME317","Design for Manufacturing",4,[]),c("ME321","Measurement Systems",4,[]),c("ME306","Control Systems",4,[]),c("HSSA","HSSA Elective",4,[]),c("ME227","Numerical Methods",4,[])]},
+    {id:uid(),name:"Y3 Spring",courses:[c("ME302","Heat Transfer",4,[]),c("ME421","ME Lab",2,[])]},
+    {id:uid(),name:"Y4 Fall",courses:[c("ME421","ME Lab",2,[]),c("ME470","Capstone Design I",4,[]),c("TECH","Technical Elective",4,[]),c("HSSA","HSSA Elective",4,[])]},
+    {id:uid(),name:"Y4 Winter",courses:[c("ME471","Capstone Design II",4,[]),c("TECH","Technical Elective",4,[]),c("HSSA","HSSA Elective",4,[]),c("FREE","Free Elective",4,[])]},
+    {id:uid(),name:"Y4 Spring",courses:[c("ME472","Capstone Design III",4,[]),c("TECH","Technical Elective",4,[]),c("TECH","Technical Elective",4,[]),c("HSSA","HSSA Elective",4,[])]},
+  ]};
+}
+
+let state=null, openCourses={};
+
+function load(){
+  try{ const r=localStorage.getItem(KEY); if(r) state=JSON.parse(r); }catch(e){}
+  if(!state) state=seed();
+  render();
+}
+function save(){
+  try{ localStorage.setItem(KEY,JSON.stringify(state)); setStatus("已保存 ✓"); }
+  catch(e){ setStatus("保存失败"); }
+}
+let st=null;
+function setStatus(t){ const el=document.getElementById("saveStatus"); if(!el)return; el.textContent=t; clearTimeout(st); st=setTimeout(()=>el.textContent="",1500); }
+
+function catAvg(cat){
+  const v=cat.items.filter(i=>i.got!==""&&i.got!=null&&i.max!==""&&i.max!=null&&Number(i.max)>0);
+  if(!v.length)return null;
+  return v.reduce((a,i)=>a+Number(i.got)/Number(i.max),0)/v.length;
+}
+function courseFinal(co){
+  let sum=0,w=0;
+  for(const cat of co.cats){ const av=catAvg(cat); if(av!=null){ sum+=av*Number(cat.weight); w+=Number(cat.weight);} }
+  return (co.cats.length&&w>0)?sum:null;
+}
+function weightSum(co){ return co.cats.reduce((a,c)=>a+Number(c.weight||0),0); }
+function termGpa(t){ let qp=0,h=0; for(const co of t.courses){ if(GPA_LETTERS.includes(co.letter)){ qp+=Number(co.cr)*LETTERS[co.letter]; h+=Number(co.cr);} } return {gpa:h>0?qp/h:null,hrs:h,qp}; }
+function cumGpa(){ let qp=0,h=0; for(const t of state.terms){ const g=termGpa(t); qp+=g.qp; h+=g.hrs; } return {gpa:h>0?qp/h:null,hrs:h}; }
+function pct(x){ return x==null?"—":(x*100).toFixed(2)+"%"; }
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function render(){
+  const t=state.terms[state.activeTerm];
+  document.getElementById("termTabs").innerHTML=state.terms.map((tm,i)=>{
+    const g=termGpa(tm);
+    return `<button class="tab ${i===state.activeTerm?'active':''}" data-term="${i}">${esc(tm.name)}${g.gpa!=null?` · ${g.gpa.toFixed(2)}`:''}</button>`;
+  }).join("");
+  const g=termGpa(t), totCr=t.courses.reduce((a,c)=>a+Number(c.cr||0),0);
+  document.getElementById("termSummary").innerHTML=`
+    <div class="sumcard"><div class="lbl">学期 GPA</div><div class="val">${g.gpa!=null?g.gpa.toFixed(3):"—"}</div></div>
+    <div class="sumcard"><div class="lbl">计入GPA学分</div><div class="val">${g.hrs}</div></div>
+    <div class="sumcard"><div class="lbl">本学期学分</div><div class="val">${totCr}</div></div>`;
+  const cg=cumGpa();
+  document.getElementById("cumGpa").textContent=cg.gpa!=null?cg.gpa.toFixed(3):"—";
+  document.getElementById("cumHrs").textContent=cg.hrs>0?cg.hrs+" 学分":"";
+  document.getElementById("courseList").innerHTML=t.courses.map((co,ci)=>courseCard(co,ci)).join("");
+  bind();
+}
+
+function courseCard(co,ci){
+  const fin=courseFinal(co), open=openCourses[co.id], ws=weightSum(co);
+  const wWarn=co.cats.length&&Math.abs(ws-1)>0.001;
+  const letterOpts=["",...Object.keys(LETTERS)].map(l=>`<option ${l===co.letter?"selected":""}>${l}</option>`).join("");
+  let body="";
+  if(open){
+    body=`<div style="padding-top:4px;">`+co.cats.map((cat,cati)=>{
+      const av=catAvg(cat);
+      const items=cat.items.map((it,ii)=>`
+        <div class="itemrow">
+          <input data-edit="item-label" data-c="${ci}" data-cat="${cati}" data-i="${ii}" value="${esc(it.label)}" placeholder="名称" style="width:64px;"/>
+          <input data-edit="item-got" data-c="${ci}" data-cat="${cati}" data-i="${ii}" value="${it.got===""||it.got==null?"":it.got}" placeholder="得分" inputmode="decimal" style="width:56px;"/>
+          <span style="color:var(--text3);">/</span>
+          <input data-edit="item-max" data-c="${ci}" data-cat="${cati}" data-i="${ii}" value="${it.max===""||it.max==null?"":it.max}" placeholder="满分" inputmode="decimal" style="width:56px;"/>
+          <span class="muted" style="min-width:42px;">${it.got!==""&&it.got!=null&&it.max?(it.got/it.max*100).toFixed(0)+"%":""}</span>
+          <button class="btn-icon" data-act="del-item" data-c="${ci}" data-cat="${cati}" data-i="${ii}" aria-label="删除">×</button>
+        </div>`).join("");
+      return `<div class="cat">
+        <div class="cathead">
+          <input data-edit="cat-name" data-c="${ci}" data-cat="${cati}" value="${esc(cat.name)}" style="width:120px; font-weight:600;"/>
+          <span class="muted">权重</span>
+          <input data-edit="cat-weight" data-c="${ci}" data-cat="${cati}" value="${cat.weight}" inputmode="decimal" style="width:56px;"/>
+          <span class="info" style="margin-left:auto; font-size:12px;">avg ${av!=null?(av*100).toFixed(1)+"%":"—"}${av!=null?` · 贡献 ${(av*cat.weight*100).toFixed(1)}%`:""}</span>
+          <button class="btn-icon" data-act="del-cat" data-c="${ci}" data-cat="${cati}" aria-label="删除类别">🗑</button>
+        </div>
+        ${items}
+        <button data-act="add-item" data-c="${ci}" data-cat="${cati}" style="height:28px; font-size:12px;">+ 加一条成绩</button>
+      </div>`;
+    }).join("")+
+    `<button data-act="add-cat" data-c="${ci}" style="font-size:12px; margin-top:4px;">+ 加类别 (Quiz/HW/Exam...)</button>
+     ${wWarn?`<div class="warn" style="font-size:12px; margin-top:6px;">⚠ 权重合计 ${(ws*100).toFixed(0)}%，应为 100%</div>`:""}</div>`;
+  }
+  return `<div class="course">
+    <div class="crow">
+      <button class="btn-icon" data-act="toggle" data-c="${ci}" aria-label="展开">${open?'▾':'▸'}</button>
+      <input data-edit="co-code" data-c="${ci}" value="${esc(co.code)}" style="width:84px; font-weight:600; font-size:14px;"/>
+      <input data-edit="co-title" data-c="${ci}" value="${esc(co.title)}" style="flex:1; min-width:100px;"/>
+      <input data-edit="co-cr" data-c="${ci}" value="${co.cr}" inputmode="decimal" style="width:40px; text-align:center;"/>
+      <span class="cr">cr</span>
+      <span class="pct" style="color:${fin!=null?'var(--text)':'var(--text3)'};">${pct(fin)}</span>
+      <select data-edit="co-letter" data-c="${ci}" style="width:60px;">${letterOpts}</select>
+      <button class="btn-icon" data-act="del-course" data-c="${ci}" aria-label="删除课程">🗑</button>
+    </div>
+    ${body}
+  </div>`;
+}
+
+function curTerm(){ return state.terms[state.activeTerm]; }
+
+function bind(){
+  document.querySelectorAll("#termTabs .tab").forEach(b=>b.onclick=()=>{state.activeTerm=+b.dataset.term; render();});
+  document.querySelectorAll("[data-act]").forEach(el=>el.onclick=()=>handleAct(el.dataset));
+  document.querySelectorAll("[data-edit]").forEach(el=>{
+    const ev=el.tagName==="SELECT"?"change":"input";
+    el.addEventListener(ev,()=>handleEdit(el));
+    if(el.tagName!=="SELECT") el.addEventListener("blur",()=>{render(); save();});
+  });
+}
+
+function handleEdit(el){
+  const d=el.dataset, t=curTerm(), co=t.courses[+d.c], v=el.value;
+  switch(d.edit){
+    case "co-code": co.code=v; break;
+    case "co-title": co.title=v; break;
+    case "co-cr": co.cr=v===""?0:parseFloat(v)||0; break;
+    case "co-letter": co.letter=v; render(); save(); return;
+    case "cat-name": co.cats[+d.cat].name=v; break;
+    case "cat-weight": co.cats[+d.cat].weight=v===""?0:parseFloat(v)||0; break;
+    case "item-label": co.cats[+d.cat].items[+d.i].label=v; break;
+    case "item-got": co.cats[+d.cat].items[+d.i].got=v===""?"":parseFloat(v); break;
+    case "item-max": co.cats[+d.cat].items[+d.i].max=v===""?"":parseFloat(v); break;
+  }
+  const cg=cumGpa(); document.getElementById("cumGpa").textContent=cg.gpa!=null?cg.gpa.toFixed(3):"—";
+}
+
+function handleAct(d){
+  const t=curTerm();
+  switch(d.act){
+    case "toggle":{const co=t.courses[+d.c]; openCourses[co.id]=!openCourses[co.id]; render(); break;}
+    case "del-course": if(confirm("删除这门课？")){t.courses.splice(+d.c,1); render(); save();} break;
+    case "add-cat": t.courses[+d.c].cats.push({id:uid(),name:"新类别",weight:0,items:[]}); render(); save(); break;
+    case "del-cat": t.courses[+d.c].cats.splice(+d.cat,1); render(); save(); break;
+    case "add-item": t.courses[+d.c].cats[+d.cat].items.push({id:uid(),label:"",got:"",max:100}); render(); save(); break;
+    case "del-item": t.courses[+d.c].cats[+d.cat].items.splice(+d.i,1); render(); save(); break;
+  }
+}
+
+document.getElementById("addCourseBtn").onclick=()=>{curTerm().courses.push({id:uid(),code:"新课程",title:"",cr:4,letter:"",cats:[]}); render(); save();};
+document.getElementById("resetBtn").onclick=()=>{if(confirm("重置为预填 Year 2 数据？你加的内容会丢失。")){state=seed(); openCourses={}; render(); save();}};
+document.getElementById("exportBtn").onclick=()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="gpa_backup_"+new Date().toISOString().slice(0,10)+".json"; a.click();
+};
+document.getElementById("importBtn").onclick=()=>document.getElementById("importFile").click();
+document.getElementById("importFile").onchange=(e)=>{
+  const f=e.target.files[0]; if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{ try{ state=JSON.parse(rd.result); openCourses={}; render(); save(); alert("导入成功"); }catch(err){ alert("文件格式错误"); } };
+  rd.readAsText(f);
+};
+
+load();
+</script>
+</body>
+</html>
