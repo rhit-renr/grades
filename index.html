@@ -125,7 +125,7 @@ button:active{transform:scale(.95);}
 .qtrhead{font-size:13px; font-weight:700; color:var(--ink); margin-bottom:5px;}
 .fcrow{display:flex; align-items:center; gap:8px; padding:7px 0; border-top:1px solid var(--line);}
 .fcrow:first-of-type{border-top:none;}
-.fccode{font-weight:700; font-size:13px; min-width:74px;}
+.fccode{font-weight:700; font-size:13px; min-width:84px;}
 .fctitle{flex:1; font-size:12px; color:var(--ink2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
 .reqcard{background:var(--card); border-radius:var(--radl); padding:16px 17px; margin-bottom:13px; box-shadow:0 4px 16px rgba(120,120,90,.08);}
@@ -523,7 +523,7 @@ function courseCard(co,ci){
   return`<div class="course">
     <div class="crow">
       <button class="btn-icon" data-act="toggle" data-c="${ci}" aria-label="展开" style="color:var(--sky-d);">${open?'▾':'▸'}</button>
-      <input data-edit="co-code" data-c="${ci}" value="${esc(co.code)}" style="width:80px; font-weight:600; font-size:14px;"/>
+      <input data-edit="co-code" data-c="${ci}" value="${esc(co.code)}" style="width:110px; font-weight:600; font-size:14px;"/>
       <input data-edit="co-title" data-c="${ci}" value="${esc(co.title)}" style="flex:1; min-width:90px;"/>
       <input data-edit="co-cr" data-c="${ci}" value="${co.cr}" inputmode="decimal" style="width:38px; text-align:center;"/>
       <span class="cr">cr</span>
